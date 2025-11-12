@@ -1,15 +1,49 @@
+## @brief Docker Compose for chatbot services
+## @details
+## Minimal docker-compose file defining backend (Ollama) and frontend (Nginx).
+## Comments use a Doxygen-like style with @brief and @details for documentation.
+version: '3.8'
 
 services:
-  open-webui:
-    image: ghcr.io/open-webui/open-webui:ollama
-    container_name: open-webui
+
+  ## @brief Ollama backend service
+  ## @details
+  ## Provides the AI model runtime. Persists model files to a named volume
+  ## to avoid re-downloading on container restarts.
+  ollama:
+    container_name: ollama_service
+    image: ollama/ollama
     ports:
-      - "3000:8080"
+      - "11434:11434"  # @brief API port mapping (host:container)
     volumes:
-      - ./ollama:/root/.ollama
-      - open-webui:/app/backend/data
-    restart: always
+      - ollama_data:/root/.ollama  # @brief Persistent storage for models
+    restart: unless-stopped
+
+    # Optional GPU reservation (uncomment if using NVIDIA runtime)
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  ## @brief Frontend static web server
+  ## @details
+  ## Serves prebuilt static files from ./frontend using Nginx. Marked read-only
+  ## to follow a safer file access policy.
+  frontend:
+    container_name: chatbot_frontend
+    image: nginx:alpine
+    ports:
+      - "8080:80"  # @brief Exposes Nginx on host port 8080
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro  # @brief Mount local build as read-only
+    depends_on:
+      - ollama
+    restart: unless-stopped
 
 volumes:
-  open-webui:
-    name: open-webui
+  ## @brief Named volume for Ollama model data
+  ollama_data:
+    name: ollama_data_volume

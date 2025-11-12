@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot — ChatGPT style</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="sidebar-top">
+                <button id="new-chat" class="new-chat">+ Nouveau chat</button>
+            </div>
+            <div class="conversations" id="conversations">
+                <!-- future conversation list -->
+            </div>
+            <div class="sidebar-footer">
+                <small>Local Chat • Ollama</small>
+            </div>
+        </aside>
+
+        <main class="main-panel">
+            <header class="main-header">
+                <div class="title">Assistant Chatbot</div>
+                <div class="status">En ligne</div>
+            </header>
+
+            <section class="chat-window" id="chatbot-messages">
+                <div class="message bot-message">
+                    <div class="avatar bot">
+                        <div class="avatar user">
+                            <img src="./pictures/logochatbot.png" alt="User"
+                                style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+
+                    </div>
+                    <div class="bubble">
+                        <div class="text">Bonjour ! Comment puis-je vous aider aujourd'hui ?</div>
+                        <div class="meta">just now</div>
+                    </div>
+                </div>
+            </section>
+
+            <form class="chat-input" id="chatbot-form">
+                <textarea id="user-input" rows="1" placeholder="Écrire un message... (Shift+Entrée pour saut de ligne)"
+                    autocomplete="off"></textarea>
+                <div class="actions">
+                    <button type="button" id="send-btn" title="Envoyer">Envoyer</button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
