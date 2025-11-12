@@ -168,10 +168,6 @@ Potential areas for contribution include:
 - Optimizing Docker configurations.
 - Developing new features in the user interface.
 
-### License
-
-This project is distributed under the MIT License. See the LICENSE file for more information.
-
 ### Acknowledgements
 
 - To the creators of the Qwen and BGE-M3 models.
