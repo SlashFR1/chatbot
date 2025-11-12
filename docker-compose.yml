@@ -1,23 +1,20 @@
-## @brief Docker Compose for chatbot services
-## @details
-## Minimal docker-compose file defining backend (Ollama) and frontend (Nginx).
-## Comments use a Doxygen-like style with @brief and @details for documentation.
-version: '3.8'
 
+# docker-compose.yml
 services:
-
-  ## @brief Ollama backend service
-  ## @details
-  ## Provides the AI model runtime. Persists model files to a named volume
-  ## to avoid re-downloading on container restarts.
   ollama:
-    container_name: ollama_service
+    # On utilise le nom du service "ollama" pour la communication réseau
     image: ollama/ollama
+    container_name: ollama_service # Le nom du conteneur peut rester
     ports:
-      - "11434:11434"  # @brief API port mapping (host:container)
+      - "11434:11434"
     volumes:
-      - ollama_data:/root/.ollama  # @brief Persistent storage for models
+      - ollama_data:/root/.ollama
     restart: unless-stopped
+
+
+    # @brief Automatically pulls qwen3:0.6b on startup ==||== disable for stability
+    #command: >
+    #  sh -c "ollama serve & sleep 5 && ollama pull qwen3:0.6b && wait" execute this command to lauch ollama and pull the model
 
     # Optional GPU reservation (uncomment if using NVIDIA runtime)
     # deploy:
@@ -27,23 +24,19 @@ services:
     #         - driver: nvidia
     #           count: 1
     #           capabilities: [gpu]
-
-  ## @brief Frontend static web server
-  ## @details
-  ## Serves prebuilt static files from ./frontend using Nginx. Marked read-only
-  ## to follow a safer file access policy.
-  frontend:
-    container_name: chatbot_frontend
+    
+  front:
     image: nginx:alpine
+    container_name: chatbot_frontend
     ports:
-      - "8080:80"  # @brief Exposes Nginx on host port 8080
+      - "8080:80"
     volumes:
-      - ./frontend:/usr/share/nginx/html:ro  # @brief Mount local build as read-only
+      - ./front:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
-      - ollama
+      - ollama # Assure que 'ollama' démarre avant 'front'
     restart: unless-stopped
 
 volumes:
-  ## @brief Named volume for Ollama model data
   ollama_data:
     name: ollama_data_volume

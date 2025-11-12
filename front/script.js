@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatbotMessages = document.getElementById('chatbot-messages');
     const sendBtn = document.getElementById('send-btn');
 
-    const API_URL = "http://ollama:11434/api/generate"; // inside docker network
+    const API_URL = "/api/generate"; 
 
     // helper to format timestamp
     function timeNow() {
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Ollama API call
     async function getBotResponse(userMessage) {
         const requestBody = {
-            model: 'qwen',
+            model: 'qwen3:0.6b',
             prompt: userMessage,
             stream: false
         };

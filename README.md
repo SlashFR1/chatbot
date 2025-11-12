@@ -228,3 +228,24 @@ This project is distributed under the MIT License. See the LICENSE file for more
     To the creators of the Qwen and BGE-M3 models.
 
     To the Docker community.
+
+
+
+
+
+
+docker-compose up -d
+
+docker ps : 
+CONTAINER ID   IMAGE           COMMAND                  CREATED              STATUS              PORTS                                             NAMES
+4e2622b7f533   nginx:alpine    "/docker-entrypoint.…"   About a minute ago   Up About a minute   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp           chatbot_frontend
+7d20351fbfb6   ollama/ollama   "/bin/ollama serve"      About a minute ago   Up About a minute   0.0.0.0:11434->11434/tcp, [::]:11434->11434/tcp   ollama_service
+
+docker exec -it ollama_service bash
+
+ollama pull qwen3:0.6b
+
+root@7d20351fbfb6:/# ollama list
+NAME          ID              SIZE      MODIFIED      
+qwen3:0.6b    7df6b6e09427    522 MB    2 minutes ago    
+
