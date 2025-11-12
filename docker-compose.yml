@@ -24,7 +24,7 @@ services:
     #         - driver: nvidia
     #           count: 1
     #           capabilities: [gpu]
-    
+
   front:
     image: nginx:alpine
     container_name: chatbot_frontend
@@ -37,6 +37,29 @@ services:
       - ollama # Assure que 'ollama' démarre avant 'front'
     restart: unless-stopped
 
+  db:
+      image: chromadb/chroma
+      ports:
+        - "8000:8000" # Expose le port pour un débogage direct (optionnel)
+      volumes:
+        - chroma_data:/chroma/.chroma/index # Volume pour rendre les données persistantes
+      # Commande pour lancer le serveur avec persistance des données
+      command: "uvicorn chromadb.app:app --reload --workers 1 --host 0.0.0.0 --port 8000"
+
+  # Service RAG (API Python)
+  rag:
+    build: ./rag # Construit l'image à partir du Dockerfile dans le dossier /rag
+    # Ne pas exposer de port au public, Nginx s'en chargera
+    volumes:
+      # Volume pour le cache des modèles Hugging Face, évite de re-télécharger BGE-M3 à chaque build
+      - huggingface_cache:/root/.cache/huggingface
+    depends_on:
+      - db # S'assure que le service 'db' est démarré avant 'rag'
+    restart: on-failure
+
+
 volumes:
+  chroma_data:
+  huggingface_cache:
   ollama_data:
     name: ollama_data_volume
